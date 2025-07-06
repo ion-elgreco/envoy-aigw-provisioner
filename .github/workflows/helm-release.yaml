@@ -22,6 +22,7 @@ jobs:
         run: |
           TAG_NAME="${GITHUB_REF#refs/tags/}"
           yq -i ".version = \"${TAG_NAME}\"" chart/Chart.yaml
+          cat chart/Chart.yaml
 
       - name: Install just
         run: |
