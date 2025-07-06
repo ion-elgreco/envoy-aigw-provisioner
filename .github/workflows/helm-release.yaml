@@ -29,7 +29,9 @@ jobs:
           sudo apt-get install -y just
 
       - name: Run pre-commit checks
-        run: just pre-commit
+        run: |
+          just _install-plugins
+          just pre-commit
 
       - name: "install helm-docs"
         run: go install github.com/norwoodj/helm-docs/cmd/helm-docs@latest

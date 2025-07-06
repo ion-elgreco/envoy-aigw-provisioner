@@ -19,4 +19,6 @@ jobs:
           sudo apt-get install -y just
 
       - name: Run just pre-commit
-        run: just pre-commit
+        run: |
+          just _install-plugins
+          just pre-commit
