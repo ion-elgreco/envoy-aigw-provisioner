@@ -21,8 +21,8 @@ jobs:
       - name: Set Chart version from tag using yq
         run: |
           TAG_NAME="${GITHUB_REF#refs/tags/}"
-          yq -i ".version = \"${TAG_NAME}\"" chart/Chart.yaml
-          cat chart/Chart.yaml
+          yq -i ".version = \"${TAG_NAME}\"" charts/envoy-aigw-provisioner/Chart.yaml
+          cat charts/envoy-aigw-provisioner/Chart.yaml
 
       - name: Install just
         run: |
