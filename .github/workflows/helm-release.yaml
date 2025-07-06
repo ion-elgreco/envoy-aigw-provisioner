@@ -39,36 +39,9 @@ jobs:
       - name: Generate Chart readme
         run: helm-docs
 
-      - name: Package chart
-        run: |
-          helm package chart --destination packaged
-
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
         with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Copy chart package to gh-pages
-        run: |
-          mkdir -p gh-pages/
-          cp packaged/*.tgz gh-pages/
-
-      - name: Update Helm repo index
-        run: |
-          REPO_OWNER="${GITHUB_REPOSITORY_OWNER}"
-          REPO_NAME="$(basename ${GITHUB_REPOSITORY})"
-          cd gh-pages
-          helm repo index . --url "https://$REPO_OWNER.github.io/$REPO_NAME"
+          charts_dir: chart
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-
-      - name: Commit and push changes
-        run: |
-          cd gh-pages
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add .
-          git commit -m "Update Helm chart repo [skip ci]" || echo "No changes to commit"
-          git push origin gh-pages
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
