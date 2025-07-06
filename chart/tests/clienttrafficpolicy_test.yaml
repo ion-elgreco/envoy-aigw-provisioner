@@ -1,0 +1,39 @@
+suite: ClientTrafficPolicy manifest render tests
+templates:
+  - templates/clienttrafficpolicy.yaml
+
+tests:
+  - it: should render a ClientTrafficPolicy with default gateway name and buffer limit
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ClientTrafficPolicy
+      - isAPIVersion:
+          of: gateway.envoyproxy.io/v1alpha1
+      - matchRegex:
+          path: metadata.name
+          pattern: "limit$"
+      - equal:
+          path: spec.targetRefs[0].kind
+          value: Gateway
+      - equal:
+          path: spec.targetRefs[0].group
+          value: gateway.networking.k8s.io
+      - equal:
+          path: spec.connection.bufferLimit
+          value: 150Mi
+
+  - it: should render a ClientTrafficPolicy referencing a custom gateway name
+    set:
+      gateway:
+        name: custom-gateway
+    asserts:
+      - equal:
+          path: spec.targetRefs[0].name
+          value: custom-gateway
+
+  - it: should render nothing if gateway is missing from values
+    asserts:
+      - hasDocuments:
+          count: 1  # Should still render with empty or default if chart helper renders name

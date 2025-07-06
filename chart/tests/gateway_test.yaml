@@ -1,0 +1,76 @@
+suite: Gateway manifest render tests
+templates:
+  - templates/gateway.yaml
+
+tests:
+  - it: should render a Gateway with default values
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Gateway
+      - isAPIVersion:
+          of: gateway.networking.k8s.io/v1
+      - matchRegex:
+          path: metadata.name
+          pattern: "^.+$"
+      - equal:
+          path: spec.gatewayClassName
+          value: envoy-ai-gateway-basic
+      - equal:
+          path: spec.listeners[0].name
+          value: http
+      - equal:
+          path: spec.listeners[0].protocol
+          value: HTTP
+      - equal:
+          path: spec.listeners[0].port
+          value: 80
+
+  - it: should support gateway.name and gatewayClassName override
+    set:
+      gateway:
+        name: custom-gw
+        gatewayClassName: custom-gwc
+        listeners:
+          - name: custom-listener
+            protocol: HTTP
+            port: 8080
+      global:
+        fullnameOverride: aigw-foo
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: custom-gw
+      - equal:
+          path: spec.gatewayClassName
+          value: custom-gwc
+      - equal:
+          path: spec.listeners[0].name
+          value: custom-listener
+      - equal:
+          path: spec.listeners[0].port
+          value: 8080
+
+  - it: should include gateway annotations if provided
+    set:
+      gateway:
+        annotations:
+          example.com/special: "ok"
+    asserts:
+      - isSubset:
+          path: metadata.annotations
+          content:
+            example.com/special: "ok"
+
+  - it: should use gatewayClass.name if provided
+    set:
+      gateway:
+        name: gw-abc
+        gatewayClassName: gwc-xyz
+    asserts:
+      - equal:
+          path: spec.gatewayClassName
+          value: gwc-xyz

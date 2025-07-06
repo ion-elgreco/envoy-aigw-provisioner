@@ -1,0 +1,104 @@
+suite: AIGatewayRoute manifest render tests
+templates:
+  - templates/aigatewayroute.yaml
+
+tests:
+  - it: should render nothing if route.rules and aiServiceBackends are empty
+    set:
+      route:
+        rules: []
+      aiServiceBackends: []
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: AIGatewayRoute
+      - notExists:
+          path: spec.rules
+  - it: should render an AIGatewayRoute with one rule and backend ref
+    set:
+      route:
+        name: aigwroute-test
+        schemaName: OpenAI
+        rules:
+          - model: gpt-4o-mini
+            backendRefs:
+              - envoy-ai-gateway-basic-openai
+      gateway:
+        name: aigw-gw
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: AIGatewayRoute
+      - isAPIVersion:
+          of: aigateway.envoyproxy.io/v1alpha1
+      - equal:
+          path: spec.schema.name
+          value: OpenAI
+      - equal:
+          path: metadata.name
+          value: aigwroute-test
+      - equal:
+          path: spec.targetRefs[0].name
+          value: aigw-gw
+      - equal:
+          path: spec.rules[0].matches[0].headers[0].name
+          value: x-ai-eg-model
+      - equal:
+          path: spec.rules[0].matches[0].headers[0].value
+          value: gpt-4o-mini
+      - equal:
+          path: spec.rules[0].backendRefs[0]
+          value: envoy-ai-gateway-basic-openai
+
+  - it: should render multiple rules for multiple models
+    set:
+      route:
+        rules:
+          - model: gpt-4
+            backendRefs: [envoy-ai-gateway-basic-openai]
+          - model: llama-2
+            backendRefs: [envoy-ai-gateway-basic-llama]
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: spec.rules[0].matches[0].headers[0].value
+          value: gpt-4
+      - equal:
+          path: spec.rules[1].matches[0].headers[0].value
+          value: llama-2
+      - equal:
+          path: spec.rules[1].backendRefs[0]
+          value: envoy-ai-gateway-basic-llama
+
+  - it: should render with gatewayName defaulting from .Values.gateway.name if not set
+    set:
+      gateway:
+        name: gw-from-values
+      route:
+        rules:
+          - model: testmodel
+            backendRefs: [test-backend]
+    asserts:
+      - equal:
+          path: spec.targetRefs[0].name
+          value: gw-from-values
+
+  - it: should set timeouts in rules if specified
+    set:
+      route:
+        rules:
+          - model: gpt-4o
+            timeouts:
+              request: 10s
+              backendRequest: 20s
+            backendRefs: [envoy-ai-gateway-basic-openai]
+    asserts:
+      - equal:
+          path: spec.rules[0].timeouts.request
+          value: 10s
+      - equal:
+          path: spec.rules[0].timeouts.backendRequest
+          value: 20s

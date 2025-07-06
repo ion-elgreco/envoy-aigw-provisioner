@@ -1,0 +1,138 @@
+suite: AIServiceBackend manifest render tests
+templates:
+  - templates/aiservicebackend.yaml
+
+tests:
+  - it: should render nothing if aiServiceBackends is empty
+    set:
+      aiServiceBackends: []
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render an OpenAI AIServiceBackend with securityPolicy of type APIKey
+    set:
+      aiServiceBackends:
+        - name: envoy-ai-gateway-basic-openai
+          schemaName: OpenAI
+          backendRef: envoy-ai-gateway-backend-openai
+          securityPolicy:
+            type: APIKey
+            secretName: envoy-ai-gateway-basic-openai-apikey
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: AIServiceBackend
+      - isAPIVersion:
+          of: aigateway.envoyproxy.io/v1alpha1
+      - equal:
+          path: metadata.name
+          value: envoy-ai-gateway-basic-openai
+      - equal:
+          path: spec.schema.name
+          value: OpenAI
+      - equal:
+          path: spec.backendRef.name
+          value: envoy-ai-gateway-backend-openai
+      - equal:
+          path: spec.backendSecurityPolicyRef.name
+          value: envoy-ai-gateway-basic-openai-apikey
+      - equal:
+          path: spec.backendSecurityPolicyRef.kind
+          value: BackendSecurityPolicy
+
+  - it: should render an AWSBedrock AIServiceBackend with AWSCredentials policy
+    set:
+      aiServiceBackends:
+        - name: envoy-ai-gateway-basic-aws
+          schemaName: AWSBedrock
+          backendRef: envoy-ai-gateway-backend-aws
+          securityPolicy:
+            type: AWSCredentials
+            secretName: envoy-ai-gateway-basic-aws-credentials
+            region: us-east-1
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: AIServiceBackend
+      - equal:
+          path: metadata.name
+          value: envoy-ai-gateway-basic-aws
+      - equal:
+          path: spec.schema.name
+          value: AWSBedrock
+      - equal:
+          path: spec.backendRef.name
+          value: envoy-ai-gateway-backend-aws
+      - equal:
+          path: spec.backendSecurityPolicyRef.name
+          value: envoy-ai-gateway-basic-aws-credentials
+      - equal:
+          path: spec.backendSecurityPolicyRef.kind
+          value: BackendSecurityPolicy
+
+  - it: should render an AzureOpenAI AIServiceBackend with AzureCredentials
+    set:
+      aiServiceBackends:
+        - name: envoy-ai-gateway-basic-azure
+          schemaName: AzureOpenAI
+          version: 2025-01-01-preview
+          backendRef: envoy-ai-gateway-backend-azure
+          securityPolicy:
+            type: AzureCredentials
+            secretName: envoy-ai-gateway-basic-azure-client-secret
+            clientID: AZURE_CLIENT_ID
+            tenantID: AZURE_TENANT_ID
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: AIServiceBackend
+      - equal:
+          path: metadata.name
+          value: envoy-ai-gateway-basic-azure
+      - equal:
+          path: spec.schema.name
+          value: AzureOpenAI
+      - equal:
+          path: spec.schema.version
+          value: 2025-01-01-preview
+      - equal:
+          path: spec.backendRef.name
+          value: envoy-ai-gateway-backend-azure
+      - equal:
+          path: spec.backendSecurityPolicyRef.name
+          value: envoy-ai-gateway-basic-azure-client-secret
+      - equal:
+          path: spec.backendSecurityPolicyRef.kind
+          value: BackendSecurityPolicy
+
+  - it: should render multiple AIServiceBackends
+    set:
+      aiServiceBackends:
+        - name: envoy-ai-gateway-basic-openai
+          schemaName: OpenAI
+          backendRef: openai-bk
+        - name: envoy-ai-gateway-basic-llama
+          schemaName: Llama
+          backendRef: llama-bk
+          securityPolicy:
+            type: APIKey
+            secretName: llama-secret
+    asserts:
+      - hasDocuments:
+          count: 2
+      - containsDocument:
+          kind: AIServiceBackend
+          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: envoy-ai-gateway-basic-openai
+      - containsDocument:
+          kind: AIServiceBackend
+          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: envoy-ai-gateway-basic-llama

@@ -1,0 +1,55 @@
+suite: GatewayClass manifest render tests
+templates:
+  - templates/gatewayclass.yaml
+
+tests:
+  - it: should render a GatewayClass when gatewayClass.enabled is true and use default naming
+    set:
+      gatewayClass:
+        enabled: true
+        name: ""
+      global:
+        fullnameOverride: aigw-gc
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: GatewayClass
+      - isAPIVersion:
+          of: gateway.networking.k8s.io/v1
+      - matchRegex:
+          path: metadata.name
+          pattern: "^.+$"
+      - equal:
+          path: spec.controllerName
+          value: gateway.envoyproxy.io/gatewayclass-controller
+
+  - it: should render a GatewayClass with given gatewayClass.name
+    set:
+      gatewayClass:
+        enabled: true
+        name: prod-gatewayclass
+    asserts:
+      - equal:
+          path: metadata.name
+          value: prod-gatewayclass
+
+  - it: should not render anything if gatewayClass.enabled is false
+    set:
+      gatewayClass:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should use global.gatewayClassName if set and gatewayClass.name is empty
+    set:
+      gatewayClass:
+        enabled: true
+        name: ""
+      global:
+        gatewayClassName: inherited-from-global
+    asserts:
+      - equal:
+          path: metadata.name
+          value: inherited-from-global

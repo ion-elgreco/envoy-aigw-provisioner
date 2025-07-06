@@ -1,0 +1,29 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: "{{ default (include "ai-gateway.name" $) }}-security"
+  namespace: {{ include "ai-gateway.namespace" . }}
+  labels:
+{{ include "ai-gateway.labels" $ | indent 4 }}
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: {{ default (include "ai-gateway.name" .) .Values.gateway.name }}
+{{- if .Values.securityPolicy.apiKey.secrets }}
+  apiKeyAuth:
+    credentialRefs:
+{{- range .Values.securityPolicy.apiKey.secrets }}
+    - group: ""
+      kind: Secret
+      name: {{ . | quote }}
+{{- end }}
+{{- if .Values.securityPolicy.apiKey.headers }}
+    extractFrom:
+    - headers:
+{{- range .Values.securityPolicy.apiKey.headers }}
+      - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

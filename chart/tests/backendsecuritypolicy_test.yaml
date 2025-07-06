@@ -1,0 +1,128 @@
+suite: BackendSecurityPolicy manifest render tests
+templates:
+  - templates/backendsecuritypolicy.yaml
+
+tests:
+  - it: should render nothing if aiServiceBackends is empty or has no securityPolicy
+    set:
+      aiServiceBackends: []
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render BackendSecurityPolicy of type APIKey
+    set:
+      aiServiceBackends:
+        - name: envoy-ai-gateway-basic-openai
+          schemaName: OpenAI
+          backendRef: envoy-ai-gateway-backend-openai
+          securityPolicy:
+            type: APIKey
+            secretName: envoy-ai-gateway-basic-openai-apikey
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: BackendSecurityPolicy
+      - isAPIVersion:
+          of: aigateway.envoyproxy.io/v1alpha1
+      - equal:
+          path: spec.type
+          value: APIKey
+      - equal:
+          path: spec.apiKey.secretRef.name
+          value: envoy-ai-gateway-basic-openai-apikey
+
+  - it: should render BackendSecurityPolicy of type AWSCredentials with region and secretRef
+    set:
+      aiServiceBackends:
+        - name: envoy-ai-gateway-basic-aws
+          schemaName: AWSBedrock
+          backendRef: envoy-ai-gateway-backend-aws
+          securityPolicy:
+            type: AWSCredentials
+            secretName: envoy-ai-gateway-basic-aws-credentials
+            region: us-east-1
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: BackendSecurityPolicy
+      - isAPIVersion:
+          of: aigateway.envoyproxy.io/v1alpha1
+      - equal:
+          path: spec.type
+          value: AWSCredentials
+      - equal:
+          path: spec.awsCredentials.region
+          value: us-east-1
+      - equal:
+          path: spec.awsCredentials.credentialsFile.secretRef.name
+          value: envoy-ai-gateway-basic-aws-credentials
+
+  - it: should render BackendSecurityPolicy of type AzureCredentials with client and tenant IDs
+    set:
+      aiServiceBackends:
+        - name: envoy-ai-gateway-basic-azure
+          schemaName: AzureOpenAI
+          backendRef: envoy-ai-gateway-backend-azure
+          securityPolicy:
+            type: AzureCredentials
+            secretName: envoy-ai-gateway-basic-azure-client-secret
+            clientID: AZURE_CLIENT_ID
+            tenantID: AZURE_TENANT_ID
+            clientSecretKey: azure-client-secret-key
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: BackendSecurityPolicy
+      - isAPIVersion:
+          of: aigateway.envoyproxy.io/v1alpha1
+      - equal:
+          path: spec.type
+          value: AzureCredentials
+      - equal:
+          path: spec.azureCredentials.clientID
+          value: AZURE_CLIENT_ID
+      - equal:
+          path: spec.azureCredentials.tenantID
+          value: AZURE_TENANT_ID
+      - equal:
+          path: spec.azureCredentials.clientSecretRef.name
+          value: envoy-ai-gateway-basic-azure-client-secret
+      - equal:
+          path: spec.azureCredentials.clientSecretRef.key
+          value: azure-client-secret-key
+
+  - it: should render multiple BackendSecurityPolicies if multiple matching aiServiceBackends have securityPolicy
+    set:
+      aiServiceBackends:
+        - name: backend1
+          schemaName: OpenAI
+          backendRef: bk1
+          securityPolicy:
+            type: APIKey
+            secretName: secret1
+        - name: backend2
+          schemaName: Llama
+          backendRef: bk2
+          securityPolicy:
+            type: AWSCredentials
+            secretName: secret2
+            region: us-west-2
+    asserts:
+      - hasDocuments:
+          count: 2
+      - containsDocument:
+          kind: BackendSecurityPolicy
+          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: secret1
+      - containsDocument:
+          kind: BackendSecurityPolicy
+          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: secret2

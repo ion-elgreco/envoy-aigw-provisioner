@@ -1,0 +1,92 @@
+suite: Backend manifest render tests
+templates:
+  - templates/backend.yaml
+
+tests:
+  - it: should render nothing if backends is empty
+    set:
+      backends: []
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render a Backend resource with a single endpoint
+    set:
+      backends:
+        - name: single-backend
+          endpoints:
+            - host: api.single.com
+              port: 443
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: Backend
+      - isAPIVersion:
+          of: gateway.envoyproxy.io/v1alpha1
+      - equal:
+          path: metadata.name
+          value: single-backend
+      - lengthEqual:
+          path: spec.endpoints
+          count: 1
+      - equal:
+          path: spec.endpoints[0].fqdn.hostname
+          value: api.single.com
+      - equal:
+          path: spec.endpoints[0].fqdn.port
+          value: 443
+
+  - it: should render multiple Backend resources
+    set:
+      backends:
+        - name: backend1
+          endpoints:
+            - host: endpoint1.com
+              port: 80
+            - host: endpoint2.com
+              port: 81
+        - name: backend2
+          endpoints:
+            - host: endpoint3.com
+              port: 8080
+    asserts:
+      - hasDocuments:
+          count: 2
+      - matchRegex:
+          path: metadata.name
+          pattern: "^backend[12]$"
+      - containsDocument:
+          kind: Backend
+          apiVersion: gateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: backend1
+      - containsDocument:
+          kind: Backend
+          apiVersion: gateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: backend2
+
+  - it: backend1 should have two endpoints
+    set:
+      backends:
+        - name: backend1
+          endpoints:
+            - host: endpointA.com
+              port: 3000
+            - host: endpointB.com
+              port: 3001
+    template: templates/backend.yaml
+    documentIndex: 0
+    asserts:
+      - lengthEqual:
+          path: spec.endpoints
+          count: 2
+      - equal:
+          path: spec.endpoints[0].fqdn.hostname
+          value: endpointA.com
+      - equal:
+          path: spec.endpoints[1].fqdn.hostname
+          value: endpointB.com

@@ -1,0 +1,18 @@
+{{- range .Values.backendTLSPolicies }}
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: {{ .name }}
+  namespace: {{ include "ai-gateway.namespace" $ }}
+  labels:
+{{ include "ai-gateway.labels" $ | indent 4 }}
+spec:
+  targetRefs:
+    - group: gateway.envoyproxy.io
+      kind: Backend
+      name: {{ .backendRef }}
+  validation:
+    wellKnownCACertificates: "System"
+    hostname: {{ .hostname }}
+---
+{{- end }}

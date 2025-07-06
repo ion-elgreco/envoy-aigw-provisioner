@@ -1,0 +1,55 @@
+suite: SecurityPolicy manifest render tests
+templates:
+  - templates/securitypolicy.yaml
+
+tests:
+  - it: should render a SecurityPolicy with no apiKeyAuth if no secrets defined
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: SecurityPolicy
+      - isAPIVersion:
+          of: gateway.envoyproxy.io/v1alpha1
+      - notExists:
+          path: spec.apiKeyAuth
+
+  - it: should render SecurityPolicy with apiKey secrets and header extraction
+    set:
+      securityPolicy:
+        apiKey:
+          secrets:
+            - envoy-api-key
+            - custom-secret
+          headers:
+            - Authorization
+            - X-Token
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: SecurityPolicy
+      - lengthEqual:
+          path: spec.apiKeyAuth.credentialRefs
+          count: 2
+      - equal:
+          path: spec.apiKeyAuth.credentialRefs[0].kind
+          value: Secret
+      - equal:
+          path: spec.apiKeyAuth.credentialRefs[0].name
+          value: envoy-api-key
+      - equal:
+          path: spec.apiKeyAuth.credentialRefs[1].name
+          value: custom-secret
+      - lengthEqual:
+          path: spec.apiKeyAuth.extractFrom
+          count: 1
+      - lengthEqual:
+          path: spec.apiKeyAuth.extractFrom[0].headers
+          count: 2
+      - equal:
+          path: spec.apiKeyAuth.extractFrom[0].headers[0]
+          value: Authorization
+      - equal:
+          path: spec.apiKeyAuth.extractFrom[0].headers[1]
+          value: X-Token
