@@ -7,10 +7,10 @@ _install-plugins:
     helm plugin install https://github.com/helm-unittest/helm-unittest.git
 
 _helm-unit-test:
-    cd chart && helm unittest .
+    cd charts/envoy-aigw-provisioner && helm unittest .
 
 _helm-lint:
-    cd chart && helm lint .
+    cd charts/envoy-aigw-provisioner && helm lint .
 
 pre-commit:
     just _helm-lint
