@@ -11,10 +11,11 @@ tests:
       - hasDocuments:
           count: 0
 
-  - it: should render an EnvoyProxy resource with image and name set
+  - it: should render an EnvoyProxy resource with image and name set when enabled and create are both true
     set:
       envoyProxy:
         enabled: true
+        create: true
         name: myproxy
         image: envoyproxy/envoy:v1.27.0
       global:
@@ -36,10 +37,11 @@ tests:
           path: spec.provider.kubernetes.envoyDeployment.container.image
           value: envoyproxy/envoy:v1.27.0
 
-  - it: should default metadata.name to chart fullname if envoyProxy.name not set
+  - it: should default metadata.name to chart fullname if envoyProxy.name not set and create is true
     set:
       envoyProxy:
         enabled: true
+        create: true
         image: envoyproxy/envoy:v1.27.0
       global:
         fullnameOverride: aigw-proxydefault
@@ -48,7 +50,39 @@ tests:
           path: metadata.name
           value: aigw-proxydefault
 
-  - it: should render when envoyProxy field is missing by default
+  - it: should render when envoyProxy field is missing by default (enabled and create both default to true)
     asserts:
       - hasDocuments:
           count: 1
+
+  - it: should render custom envoyService.type and annotations
+    set:
+      envoyProxy:
+        enabled: true
+        create: true
+        name: customproxy
+        image: envoyproxy/envoy:v1.27.0
+        envoyService:
+          type: NodePort
+          annotations:
+            custom-anno: custom-value
+            key2: "42"
+    asserts:
+      - equal:
+          path: spec.provider.kubernetes.envoyService.type
+          value: NodePort
+      - equal:
+          path: spec.provider.kubernetes.envoyService.annotations.custom-anno
+          value: custom-value
+      - equal:
+          path: spec.provider.kubernetes.envoyService.annotations.key2
+          value: "42"
+
+  - it: should render nothing if envoyProxy.enabled is true but create is false
+    set:
+      envoyProxy:
+        enabled: true
+        create: false
+    asserts:
+      - hasDocuments:
+          count: 0
