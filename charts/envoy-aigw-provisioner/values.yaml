@@ -10,9 +10,15 @@ gatewayClass:
   name: ""
 
 envoyProxy:
-  enabled: true
+  enabled: true           # whether to use an EnvoyProxy at all (attach to Gateway)
+  create: true            # whether to create the EnvoyProxy resource (only relevant if enabled is true)
   name: ""
   image: ""
+  envoyService:
+    # Type of Kubernetes Service for Envoy (e.g., LoadBalancer, NodePort, ClusterIP)
+    type: LoadBalancer
+    # Annotations to apply to the Envoy service (e.g. for internal/external LB, etc)
+    annotations: {}
 
 # Enoy Gateway
 gateway:

@@ -1,4 +1,4 @@
-{{- if .Values.envoyProxy.enabled }}
+{{- if and .Values.envoyProxy.enabled .Values.envoyProxy.create }}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyProxy
 metadata:
@@ -11,9 +11,11 @@ spec:
     type: Kubernetes
     kubernetes:
       envoyService:
-        type: LoadBalancer  # or NodePort, LoadBalanc
+        type: {{ .Values.envoyProxy.envoyService.type | default "LoadBalancer" }}  # or NodePort, LoadBalancer
+        {{- with .Values.envoyProxy.envoyService.annotations }}
         annotations:
-          service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+          {{ toYaml . | nindent 10 }}
+        {{- end }}
       envoyDeployment:
         container:
           image: {{ .Values.envoyProxy.image }}
