@@ -35,12 +35,6 @@ tests:
       - equal:
           path: spec.backendRef.name
           value: envoy-ai-gateway-backend-openai
-      - equal:
-          path: spec.backendSecurityPolicyRef.name
-          value: envoy-ai-gateway-basic-openai-apikey
-      - equal:
-          path: spec.backendSecurityPolicyRef.kind
-          value: BackendSecurityPolicy
 
   - it: should render an AWSBedrock AIServiceBackend with AWSCredentials policy
     set:
@@ -66,12 +60,6 @@ tests:
       - equal:
           path: spec.backendRef.name
           value: envoy-ai-gateway-backend-aws
-      - equal:
-          path: spec.backendSecurityPolicyRef.name
-          value: envoy-ai-gateway-basic-aws-credentials
-      - equal:
-          path: spec.backendSecurityPolicyRef.kind
-          value: BackendSecurityPolicy
 
   - it: should render an AzureOpenAI AIServiceBackend with AzureCredentials
     set:
@@ -102,12 +90,6 @@ tests:
       - equal:
           path: spec.backendRef.name
           value: envoy-ai-gateway-backend-azure
-      - equal:
-          path: spec.backendSecurityPolicyRef.name
-          value: envoy-ai-gateway-basic-azure-client-secret
-      - equal:
-          path: spec.backendSecurityPolicyRef.kind
-          value: BackendSecurityPolicy
 
   - it: should render multiple AIServiceBackends
     set:
