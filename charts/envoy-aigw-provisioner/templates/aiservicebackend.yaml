@@ -16,11 +16,5 @@ spec:
     name: {{ .backendRef }}
     kind: Backend
     group: gateway.envoyproxy.io
-  {{- if .securityPolicy }}
-  backendSecurityPolicyRef:
-    name: {{ .securityPolicy.secretName }}
-    kind: BackendSecurityPolicy
-    group: aigateway.envoyproxy.io
-  {{- end }}
 ---
 {{- end }}

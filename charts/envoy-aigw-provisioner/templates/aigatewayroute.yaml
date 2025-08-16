@@ -6,9 +6,7 @@ metadata:
   labels:
 {{ include "ai-gateway.labels" $ | indent 4 }}
 spec:
-  schema:
-    name: {{ .Values.route.schemaName }}
-  targetRefs:
+  parentRefs:
     - name: {{ .Values.route.gatewayName | default .Values.gateway.name | default (include "ai-gateway.name" .) }}
       kind: Gateway
       group: gateway.networking.k8s.io

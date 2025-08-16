@@ -3,11 +3,15 @@
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: BackendSecurityPolicy
 metadata:
-  name: {{ .securityPolicy.secretName }}
+  name: {{ .securityPolicy.secretName }}-sp
   namespace: {{ include "ai-gateway.namespace" $ }}
   labels:
 {{ include "ai-gateway.labels" $ | indent 4 }}
 spec:
+  targetRefs:
+    - name: {{ .name }}
+      kind: AIServiceBackend
+      group: aigateway.envoyproxy.io
   type: {{ .securityPolicy.type }}
   {{- if eq .securityPolicy.type "APIKey" }}
   apiKey:

@@ -81,7 +81,6 @@ route:
   name: ""
   # defaults to release name if empty
   gatewayName: ""
-  schemaName: OpenAI
   rules: []
     # # each element = one rule in the CRD
     # - model: gpt-4o-mini

@@ -33,14 +33,12 @@ tests:
           of: AIGatewayRoute
       - isAPIVersion:
           of: aigateway.envoyproxy.io/v1alpha1
-      - equal:
-          path: spec.schema.name
-          value: OpenAI
+
       - equal:
           path: metadata.name
           value: aigwroute-test
       - equal:
-          path: spec.targetRefs[0].name
+          path: spec.parentRefs[0].name
           value: aigw-gw
       - equal:
           path: spec.rules[0].matches[0].headers[0].name
@@ -83,7 +81,7 @@ tests:
             backendRefs: [test-backend]
     asserts:
       - equal:
-          path: spec.targetRefs[0].name
+          path: spec.parentRefs[0].name
           value: gw-from-values
 
   - it: should set timeouts in rules if specified

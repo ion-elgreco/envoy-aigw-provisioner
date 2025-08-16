@@ -119,10 +119,10 @@ tests:
           apiVersion: aigateway.envoyproxy.io/v1alpha1
           documentSelector:
             path: metadata.name
-            value: secret1
+            value: secret1-sp
       - containsDocument:
           kind: BackendSecurityPolicy
           apiVersion: aigateway.envoyproxy.io/v1alpha1
           documentSelector:
             path: metadata.name
-            value: secret2
+            value: secret2-sp
