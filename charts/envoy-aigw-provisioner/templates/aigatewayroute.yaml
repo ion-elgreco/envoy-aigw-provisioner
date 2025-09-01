@@ -1,20 +1,21 @@
+{{- range $i, $route := .Values.routes }}
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: AIGatewayRoute
 metadata:
-  name: {{ .Values.route.name | default (include "ai-gateway.name" $) }}
-  namespace: {{ include "ai-gateway.namespace" . }}
+  name: {{ $route.name | default (printf "%s-%d" (include "ai-gateway.name" $) (add $i 1)) }}
+  namespace: {{ include "ai-gateway.namespace" $ }}
   labels:
 {{ include "ai-gateway.labels" $ | indent 4 }}
 spec:
   schema:
-    name: {{ .Values.route.schemaName }}
+    name: {{ $route.schemaName | default "OpenAI" }}
   targetRefs:
-    - name: {{ .Values.route.gatewayName | default .Values.gateway.name | default (include "ai-gateway.name" .) }}
+    - name: {{ $route.gatewayName | default $.Values.gateway.name | default (include "ai-gateway.name" $) }}
       kind: Gateway
       group: gateway.networking.k8s.io
-{{- if .Values.route.rules }}
+{{- if $route.rules }}
   rules:
-{{- range .Values.route.rules }}
+{{- range $route.rules }}
     - matches:
         - headers:
             - type: Exact
@@ -32,4 +33,6 @@ spec:
         {{- end }}
       {{- end }}
 {{- end }}
+{{- end }}
+---
 {{- end }}

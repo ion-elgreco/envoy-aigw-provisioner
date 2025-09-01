@@ -3,27 +3,24 @@ templates:
   - templates/aigatewayroute.yaml
 
 tests:
-  - it: should render nothing if route.rules and aiServiceBackends are empty
+  - it: should render nothing if routes and aiServiceBackends are empty
     set:
-      route:
-        rules: []
+      routes: []
       aiServiceBackends: []
     asserts:
       - hasDocuments:
-          count: 1
-      - isKind:
-          of: AIGatewayRoute
-      - notExists:
-          path: spec.rules
-  - it: should render an AIGatewayRoute with one rule and backend ref
+          count: 0
+
+  - it: should render an AIGatewayRoute with one rule and backend ref (routes)
     set:
-      route:
-        name: aigwroute-test
-        schemaName: OpenAI
-        rules:
-          - model: gpt-4o-mini
-            backendRefs:
-              - envoy-ai-gateway-basic-openai
+      routes:
+        - name: aigwroute-test
+          schemaName: OpenAI
+          gatewayName: aigw-gw
+          rules:
+            - model: gpt-4o-mini
+              backendRefs:
+                - envoy-ai-gateway-basic-openai
       gateway:
         name: aigw-gw
     asserts:
@@ -52,14 +49,14 @@ tests:
           path: spec.rules[0].backendRefs[0]
           value: envoy-ai-gateway-basic-openai
 
-  - it: should render multiple rules for multiple models
+  - it: should render multiple rules for multiple models (routes)
     set:
-      route:
-        rules:
-          - model: gpt-4
-            backendRefs: [envoy-ai-gateway-basic-openai]
-          - model: llama-2
-            backendRefs: [envoy-ai-gateway-basic-llama]
+      routes:
+        - rules:
+            - model: gpt-4
+              backendRefs: [envoy-ai-gateway-basic-openai]
+            - model: llama-2
+              backendRefs: [envoy-ai-gateway-basic-llama]
     asserts:
       - hasDocuments:
           count: 1
@@ -73,28 +70,28 @@ tests:
           path: spec.rules[1].backendRefs[0]
           value: envoy-ai-gateway-basic-llama
 
-  - it: should render with gatewayName defaulting from .Values.gateway.name if not set
+  - it: should render with gatewayName defaulting from .Values.gateway.name if not set (routes)
     set:
       gateway:
         name: gw-from-values
-      route:
-        rules:
-          - model: testmodel
-            backendRefs: [test-backend]
+      routes:
+        - rules:
+            - model: testmodel
+              backendRefs: [test-backend]
     asserts:
       - equal:
           path: spec.targetRefs[0].name
           value: gw-from-values
 
-  - it: should set timeouts in rules if specified
+  - it: should set timeouts in rules if specified (routes)
     set:
-      route:
-        rules:
-          - model: gpt-4o
-            timeouts:
-              request: 10s
-              backendRequest: 20s
-            backendRefs: [envoy-ai-gateway-basic-openai]
+      routes:
+        - rules:
+            - model: gpt-4o
+              timeouts:
+                request: 10s
+                backendRequest: 20s
+              backendRefs: [envoy-ai-gateway-basic-openai]
     asserts:
       - equal:
           path: spec.rules[0].timeouts.request
@@ -102,3 +99,32 @@ tests:
       - equal:
           path: spec.rules[0].timeouts.backendRequest
           value: 20s
+
+  - it: should render multiple AIGatewayRoute resources when multiple routes are provided
+    set:
+      routes:
+        - name: route-one
+          schemaName: OpenAI
+          rules:
+            - model: model-one
+              backendRefs: [backend-one]
+        - name: route-two
+          schemaName: OpenAI
+          rules:
+            - model: model-two
+              backendRefs: [backend-two]
+    asserts:
+      - hasDocuments:
+          count: 2
+      - containsDocument:
+          kind: AIGatewayRoute
+          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: route-one
+      - containsDocument:
+          kind: AIGatewayRoute
+          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          documentSelector:
+            path: metadata.name
+            value: route-two

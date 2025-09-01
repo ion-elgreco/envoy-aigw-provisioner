@@ -77,20 +77,18 @@ aiServiceBackends: []
   #     tenantID: AZURE_TENANT_ID
 
 # Envoy AI Gateway Route, referencing Envoy AI Gateway Service backends
-route:
-  name: ""
-  # defaults to release name if empty
-  gatewayName: ""
-  schemaName: OpenAI
-  rules: []
-    # # each element = one rule in the CRD
-    # - model: gpt-4o-mini
-    #   # Optional timeouts:
-    #   timeouts:
-      #   request: 15s
-      #   backendRequest: 15s
-    #   backendRefs:
-    #     - envoy-ai-gateway-basic-openai
+routes: []
+  # - name: my-route-1
+  #   gatewayName: ""
+  #   schemaName: OpenAI
+  #   rules:
+  #     - model: gpt-4o-mini
+  #       # Optional timeouts:
+  #       timeouts:
+  #         request: 15s
+  #         backendRequest: 15s
+  #       backendRefs:
+  #         - envoy-ai-gateway-basic-openai
 
 # Envoy AI Gateway TLS Backend policies
 backendTLSPolicies: []
