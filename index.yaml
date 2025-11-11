@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   ai-gateway-provisioner:
   - apiVersion: v2
+    created: "2025-11-11T11:07:44.890866579Z"
+    description: A Helm chart to provision an AIGW with Envoy AI Gateway
+    digest: b1cbabca41af8341ff657c645c130b64599aa4ec5e13f57a9a94a9b01134d017
+    name: ai-gateway-provisioner
+    type: application
+    urls:
+    - https://github.com/ion-elgreco/envoy-aigw-provisioner/releases/download/ai-gateway-provisioner-0.3.0/ai-gateway-provisioner-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
     created: "2025-08-16T08:57:43.587446453Z"
     description: A Helm chart to provision an AIGW with Envoy AI Gateway
     digest: d77f8ce6f6e873eb791f1626ef110a041a75d1ef254c2965528b8e426b901c12
@@ -28,4 +37,4 @@ entries:
     urls:
     - https://github.com/ion-elgreco/envoy-aigw-provisioner/releases/download/ai-gateway-provisioner-0.1.0/ai-gateway-provisioner-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-16T08:57:43.587462674Z"
+generated: "2025-11-11T11:07:44.89088334Z"
