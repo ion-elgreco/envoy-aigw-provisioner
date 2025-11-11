@@ -1,0 +1,21 @@
+{{- if .Values.mcpRoute.enabled }}
+apiVersion: aigateway.envoyproxy.io/v1alpha1
+kind: MCPRoute
+metadata:
+  name: {{ .Values.mcpRoute.name | default (include "ai-gateway.name" $) }}
+  namespace: {{ include "ai-gateway.namespace" . }}
+  labels:
+{{ include "ai-gateway.labels" $ | indent 4 }}
+spec:
+  parentRefs:
+    - name: {{ .Values.mcpRoute.gatewayName | default .Values.gateway.name | default (include "ai-gateway.name" .) }}
+      kind: Gateway
+      group: gateway.networking.k8s.io
+{{- if .Values.mcpRoute.path }}
+  path: {{ .Values.mcpRoute.path | quote }}
+{{- end }}
+{{- if .Values.mcpRoute.backendRefs }}
+  backendRefs:
+{{ toYaml .Values.mcpRoute.backendRefs | indent 4 }}
+{{- end }}
+{{- end }}
