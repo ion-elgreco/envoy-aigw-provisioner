@@ -89,7 +89,27 @@ route:
       #   request: 15s
       #   backendRequest: 15s
     #   backendRefs:
-    #     - envoy-ai-gateway-basic-openai
+    #     # ref: https://aigateway.envoyproxy.io/docs/0.4/api/#aigatewayrouterulebackendref
+    #     - name: envoy-ai-gateway-basic-openai
+    #       # optional:
+    #       # namespace: other-namespace
+
+
+# Envoy AI Gateway MCP Route, referencing Envoy AI Gateway Service backends
+mcpRoute:
+  name: ""
+  gatewayName: ""
+  path: "/mcp"
+    ## Each element = one backendref in the CRD
+  backendRefs: []
+    # - name: "github-mcp"
+    #   kind: Backend
+    #   group: gateway.envoyproxy.io
+    #   # Optional
+    #   # namespace: "custom-namespace"
+    #   # port: 3030 # service port of the k8s service
+    #   # path: "/mcp"
+
 
 # Envoy AI Gateway TLS Backend policies
 backendTLSPolicies: []
