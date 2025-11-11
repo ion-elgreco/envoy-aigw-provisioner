@@ -97,6 +97,7 @@ route:
 
 # Envoy AI Gateway MCP Route, referencing Envoy AI Gateway Service backends
 mcpRoute:
+  enabled: false
   name: ""
   gatewayName: ""
   path: "/mcp"

@@ -1,0 +1,94 @@
+suite: MCPRoute manifest render tests
+templates:
+  - templates/mcproute.yaml
+
+tests:
+  - it: should not render mcp route manifest when disabled
+    set:
+      mcpRoute:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should not render spec.backendRefs or spec.path when backendRefs and path are empty
+    set:
+      mcpRoute:
+        enabled: true
+        name: ""
+        path: ""
+        backendRefs: []
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: MCPRoute
+      - notExists:
+          path: spec.backendRefs
+      - notExists:
+          path: spec.path
+
+  - it: should render an MCPRoute with path and multiple backendRefs
+    set:
+      mcpRoute:
+        enabled: true
+        name: mcp-unified
+        gatewayName: aigw-run
+        path: "/mcp"
+        backendRefs:
+          - name: github
+            kind: Backend
+            group: gateway.envoyproxy.io
+            path: "/mcp/x/issues/readonly"
+            securityPolicy:
+              apiKey:
+                secretRef:
+                  name: github-token
+          - name: context7
+            kind: Backend
+            group: gateway.envoyproxy.io
+            path: "/mcp"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: MCPRoute
+      - isAPIVersion:
+          of: aigateway.envoyproxy.io/v1alpha1
+      - equal:
+          path: metadata.name
+          value: mcp-unified
+      - equal:
+          path: spec.parentRefs[0].name
+          value: aigw-run
+      - equal:
+          path: spec.path
+          value: "/mcp"
+      - equal:
+          path: spec.backendRefs[0].name
+          value: github
+      - equal:
+          path: spec.backendRefs[0].path
+          value: /mcp/x/issues/readonly
+      - equal:
+          path: spec.backendRefs[0].securityPolicy.apiKey.secretRef.name
+          value: github-token
+      - equal:
+          path: spec.backendRefs[1].name
+          value: context7
+
+  - it: should default parentRefs.name from .Values.gateway.name when mcpRoute.gatewayName not set
+    set:
+      gateway:
+        name: gw-from-values
+      mcpRoute:
+        enabled: true
+        path: "/mcp"
+        backendRefs:
+          - name: test-back
+            kind: Backend
+            group: gateway.envoyproxy.io
+            path: "/mcp/test"
+    asserts:
+      - equal:
+          path: spec.parentRefs[0].name
+          value: gw-from-values

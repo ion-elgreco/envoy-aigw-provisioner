@@ -1,3 +1,4 @@
+{{- if .Values.mcpRoute.enabled }}
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
@@ -16,4 +17,5 @@ spec:
 {{- if .Values.mcpRoute.backendRefs }}
   backendRefs:
 {{ toYaml .Values.mcpRoute.backendRefs | indent 4 }}
+{{- end }}
 {{- end }}
