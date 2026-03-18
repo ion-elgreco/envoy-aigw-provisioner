@@ -21,6 +21,7 @@ Use the table below to find the compatible combination of Envoy AIGW controller 
 | 0.2.x                   | 0.1.x             |
 | 0.3.x                   | 0.2.x             |
 | 0.4.x                   | 0.3.x             |
+| 0.5.x                   | 0.4.x             |
 
 Notes:
 - The provisioner chart and the Envoy AIGW controller follow a tightly-coupled compatibility surface. Always ensure you install the chart version that matches the controller series you plan to use.
