@@ -3,6 +3,13 @@ templates:
   - templates/aigatewayroute.yaml
 
 tests:
+  - it: should not render aigatewayroute manifest when disabled
+    set:
+      route:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
   - it: should render nothing if route.rules and aiServiceBackends are empty
     set:
       route:

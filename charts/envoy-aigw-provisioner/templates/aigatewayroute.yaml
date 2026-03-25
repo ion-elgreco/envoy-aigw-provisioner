@@ -1,3 +1,4 @@
+{{- if .Values.route.enabled }}
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: AIGatewayRoute
 metadata:
@@ -29,5 +30,6 @@ spec:
         backendRequest: {{ .timeouts.backendRequest }}
         {{- end }}
       {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
