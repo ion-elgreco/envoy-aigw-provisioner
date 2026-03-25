@@ -78,6 +78,7 @@ aiServiceBackends: []
 
 # Envoy AI Gateway Route, referencing Envoy AI Gateway Service backends
 route:
+  enabled: true
   name: ""
   # defaults to release name if empty
   gatewayName: ""
