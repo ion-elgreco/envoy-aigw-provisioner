@@ -14,15 +14,19 @@ helm install my-aigw aigw/ai-gateway-provisioner
 
 ## Compatibility matrix
 
-Use the table below to find the compatible combination of Envoy AIGW controller (aigw) and this provisioner chart.
+Use the table below to select a compatible Envoy AI Gateway, Envoy Gateway, and provisioner chart combination.
 
-| Envoy AIGW (controller) | Provisioner chart |
-|-------------------------:|:------------------|
-| 0.2.x                   | 0.1.x             |
-| 0.3.x                   | 0.2.x             |
-| 0.4.x                   | 0.3.x             |
-| 0.5.x                   | 0.4.x             |
+| Envoy AI Gateway | Envoy Gateway | Gateway API | Provisioner chart | AI Gateway API |
+|:-----------------|:--------------|:------------|:------------------|:---------------|
+| 1.0.x            | 1.8.x         | 1.5.x       | 0.5.x             | `aigateway.envoyproxy.io/v1beta1` |
+| 0.5.x            | 1.3.x         | 1.2.x       | 0.4.x             | `aigateway.envoyproxy.io/v1alpha1` |
+| 0.4.x            | 1.3.x         | 1.2.x       | 0.3.x             | `aigateway.envoyproxy.io/v1alpha1` |
+| 0.3.x            | 1.2.x         | 1.2.x       | 0.2.x             | `aigateway.envoyproxy.io/v1alpha1` |
+| 0.2.x            | 1.2.x         | 1.2.x       | 0.1.x             | `aigateway.envoyproxy.io/v1alpha1` |
+
+The `1.0.x` row is validated against Envoy AI Gateway `v1.0.0`, Envoy Gateway `v1.8.1`, and Gateway API `v1.5.1`.
 
 Notes:
-- The provisioner chart and the Envoy AIGW controller follow a tightly-coupled compatibility surface. Always ensure you install the chart version that matches the controller series you plan to use.
-- If you are upgrading either the controller or the chart, check the chart's CHANGELOG or release notes for any migration steps required between versions.
+- Install the Envoy Gateway and Envoy AI Gateway CRDs before installing this provisioner chart.
+- Keep the provisioner chart aligned with the Envoy AI Gateway controller series shown above.
+- When upgrading, follow the Envoy AI Gateway release guidance and upgrade no more than two minor versions at a time.

@@ -1,5 +1,5 @@
 {{- range .Values.aiServiceBackends }}
-apiVersion: aigateway.envoyproxy.io/v1alpha1
+apiVersion: aigateway.envoyproxy.io/v1beta1
 kind: AIServiceBackend
 metadata:
   name: {{ .name }}
