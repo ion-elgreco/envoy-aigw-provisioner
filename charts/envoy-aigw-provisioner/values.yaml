@@ -48,7 +48,7 @@ backends: []
   #     - host: api.openai.com
   #       port: 443
 
-# Envoy AI Gateway Service Backends + its security policy
+# Envoy AI Gateway v1.0 Service Backends + their security policies
 aiServiceBackends: []
   # - name: envoy-ai-gateway-basic-openai
   #   schemaName: OpenAI
@@ -76,7 +76,7 @@ aiServiceBackends: []
   #     clientID: AZURE_CLIENT_ID
   #     tenantID: AZURE_TENANT_ID
 
-# Envoy AI Gateway Route, referencing Envoy AI Gateway Service backends
+# Envoy AI Gateway v1.0 Route, referencing Envoy AI Gateway Service backends
 route:
   enabled: true
   name: ""
@@ -90,13 +90,13 @@ route:
       #   request: 15s
       #   backendRequest: 15s
     #   backendRefs:
-    #     # ref: https://aigateway.envoyproxy.io/docs/0.4/api/#aigatewayrouterulebackendref
+    #     # ref: https://aigateway.envoyproxy.io/docs/api/api-reference/#aigatewayrouterulebackendref
     #     - name: envoy-ai-gateway-basic-openai
     #       # optional:
     #       # namespace: other-namespace
 
 
-# Envoy AI Gateway MCP Route, referencing Envoy AI Gateway Service backends
+# Envoy AI Gateway v1.0 MCP Route, referencing Envoy Gateway backends
 mcpRoute:
   enabled: false
   name: ""

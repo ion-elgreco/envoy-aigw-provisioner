@@ -53,7 +53,7 @@ tests:
       - isKind:
           of: MCPRoute
       - isAPIVersion:
-          of: aigateway.envoyproxy.io/v1alpha1
+          of: aigateway.envoyproxy.io/v1beta1
       - equal:
           path: metadata.name
           value: mcp-unified

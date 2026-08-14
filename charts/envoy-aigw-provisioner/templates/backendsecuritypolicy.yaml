@@ -1,6 +1,6 @@
 {{- range .Values.aiServiceBackends }}
   {{- if .securityPolicy }}
-apiVersion: aigateway.envoyproxy.io/v1alpha1
+apiVersion: aigateway.envoyproxy.io/v1beta1
 kind: BackendSecurityPolicy
 metadata:
   name: {{ .securityPolicy.secretName }}-sp

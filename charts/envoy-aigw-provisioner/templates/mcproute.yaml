@@ -1,5 +1,5 @@
 {{- if .Values.mcpRoute.enabled }}
-apiVersion: aigateway.envoyproxy.io/v1alpha1
+apiVersion: aigateway.envoyproxy.io/v1beta1
 kind: MCPRoute
 metadata:
   name: {{ .Values.mcpRoute.name | default (include "ai-gateway.name" $) }}

@@ -25,7 +25,7 @@ tests:
       - isKind:
           of: BackendSecurityPolicy
       - isAPIVersion:
-          of: aigateway.envoyproxy.io/v1alpha1
+          of: aigateway.envoyproxy.io/v1beta1
       - equal:
           path: spec.type
           value: APIKey
@@ -49,7 +49,7 @@ tests:
       - isKind:
           of: BackendSecurityPolicy
       - isAPIVersion:
-          of: aigateway.envoyproxy.io/v1alpha1
+          of: aigateway.envoyproxy.io/v1beta1
       - equal:
           path: spec.type
           value: AWSCredentials
@@ -78,7 +78,7 @@ tests:
       - isKind:
           of: BackendSecurityPolicy
       - isAPIVersion:
-          of: aigateway.envoyproxy.io/v1alpha1
+          of: aigateway.envoyproxy.io/v1beta1
       - equal:
           path: spec.type
           value: AzureCredentials
@@ -116,13 +116,13 @@ tests:
           count: 2
       - containsDocument:
           kind: BackendSecurityPolicy
-          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          apiVersion: aigateway.envoyproxy.io/v1beta1
           documentSelector:
             path: metadata.name
             value: secret1-sp
       - containsDocument:
           kind: BackendSecurityPolicy
-          apiVersion: aigateway.envoyproxy.io/v1alpha1
+          apiVersion: aigateway.envoyproxy.io/v1beta1
           documentSelector:
             path: metadata.name
             value: secret2-sp

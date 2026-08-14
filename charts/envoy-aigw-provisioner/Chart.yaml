@@ -2,4 +2,9 @@ apiVersion: v2
 name: ai-gateway-provisioner
 description: A Helm chart to provision an AIGW with Envoy AI Gateway
 type: application
-version: 0.0.1-dev
+version: 0.1.0-dev
+appVersion: "1.0.0"
+kubeVersion: ">=1.30.0-0"
+annotations:
+  aigateway.envoyproxy.io/version: "v1.0.0"
+  gateway.envoyproxy.io/version: "v1.8.1"
