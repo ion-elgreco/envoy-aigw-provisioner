@@ -18,13 +18,11 @@ Use the table below to select a compatible Envoy AI Gateway, Envoy Gateway, and 
 
 | Envoy AI Gateway | Envoy Gateway | Gateway API | Provisioner chart | AI Gateway API |
 |:-----------------|:--------------|:------------|:------------------|:---------------|
-| 1.0.x            | 1.8.x         | 1.5.x       | 0.5.x             | `aigateway.envoyproxy.io/v1beta1` |
-| 0.5.x            | 1.3.x         | 1.2.x       | 0.4.x             | `aigateway.envoyproxy.io/v1alpha1` |
-| 0.4.x            | 1.3.x         | 1.2.x       | 0.3.x             | `aigateway.envoyproxy.io/v1alpha1` |
-| 0.3.x            | 1.2.x         | 1.2.x       | 0.2.x             | `aigateway.envoyproxy.io/v1alpha1` |
-| 0.2.x            | 1.2.x         | 1.2.x       | 0.1.x             | `aigateway.envoyproxy.io/v1alpha1` |
-
-The `1.0.x` row is validated against Envoy AI Gateway `v1.0.0`, Envoy Gateway `v1.8.1`, and Gateway API `v1.5.1`.
+| 1.0.x            | 1.8.x         | 1.5.1       | 0.5.x             | `aigateway.envoyproxy.io/v1beta1` |
+| 0.5.x            | 1.6.x         | 1.4.0       | 0.4.x             | `aigateway.envoyproxy.io/v1alpha1` |
+| 0.4.x            | 1.5.x–1.6.x   | 1.4.0       | 0.3.x             | `aigateway.envoyproxy.io/v1alpha1` |
+| 0.3.x            | 1.5.x         | 1.3.1       | 0.2.x             | `aigateway.envoyproxy.io/v1alpha1` |
+| 0.2.x            | 1.4.x         | 1.3.0       | 0.1.x             | `aigateway.envoyproxy.io/v1alpha1` |
 
 Notes:
 - Install the Envoy Gateway and Envoy AI Gateway CRDs before installing this provisioner chart.
