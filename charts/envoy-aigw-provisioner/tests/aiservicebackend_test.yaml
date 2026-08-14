@@ -67,6 +67,7 @@ tests:
         - name: envoy-ai-gateway-basic-azure
           schemaName: AzureOpenAI
           version: 2025-01-01-preview
+          prefix: /openai/v1
           backendRef: envoy-ai-gateway-backend-azure
           securityPolicy:
             type: AzureCredentials
@@ -87,6 +88,9 @@ tests:
       - equal:
           path: spec.schema.version
           value: 2025-01-01-preview
+      - equal:
+          path: spec.schema.prefix
+          value: /openai/v1
       - equal:
           path: spec.backendRef.name
           value: envoy-ai-gateway-backend-azure

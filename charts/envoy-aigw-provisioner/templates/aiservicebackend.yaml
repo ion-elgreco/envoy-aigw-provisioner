@@ -10,7 +10,10 @@ spec:
   schema:
     name: {{ .schemaName }}
     {{- if .version }}
-    version: {{ .version }}
+    version: {{ .version | quote }}
+    {{- end }}
+    {{- if .prefix }}
+    prefix: {{ .prefix | quote }}
     {{- end }}
   backendRef:
     name: {{ .backendRef }}

@@ -52,6 +52,7 @@ backends: []
 aiServiceBackends: []
   # - name: envoy-ai-gateway-basic-openai
   #   schemaName: OpenAI
+  #   prefix: /v1
   #   backendRef: envoy-ai-gateway-backend-openai
   #   securityPolicy:
   #     type: APIKey
@@ -68,6 +69,7 @@ aiServiceBackends: []
 
   # - name: envoy-ai-gateway-basic-azure
   #   schemaName: AzureOpenAI
+  #   prefix: /openai/v1
   #   version: 2025-01-01-preview
   #   backendRef: envoy-ai-gateway-backend-azure
   #   securityPolicy:
