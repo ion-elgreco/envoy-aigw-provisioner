@@ -41,6 +41,14 @@ gateway:
     #     certificateRefs:
     #       - name: aigw-envoy-tls
 
+# Envoy ClientTrafficPolicy
+clientTrafficPolicy:
+  connection:
+    bufferLimit: 150Mi
+  http2:
+    initialStreamWindowSize: 16Mi
+    initialConnectionWindowSize: 24Mi
+
 # Envoy Backends (endpoints)
 backends: []
   # - name: envoy-ai-gateway-backend-openai

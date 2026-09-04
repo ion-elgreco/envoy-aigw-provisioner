@@ -3,7 +3,7 @@ templates:
   - templates/clienttrafficpolicy.yaml
 
 tests:
-  - it: should render a ClientTrafficPolicy with default gateway name and buffer limit
+  - it: should render a ClientTrafficPolicy with default gateway name and traffic settings
     asserts:
       - hasDocuments:
           count: 1
@@ -23,6 +23,31 @@ tests:
       - equal:
           path: spec.connection.bufferLimit
           value: 150Mi
+      - equal:
+          path: spec.http2.initialStreamWindowSize
+          value: 16Mi
+      - equal:
+          path: spec.http2.initialConnectionWindowSize
+          value: 24Mi
+
+  - it: should render configured traffic settings
+    set:
+      clientTrafficPolicy:
+        connection:
+          bufferLimit: 100Mi
+        http2:
+          initialStreamWindowSize: 8Mi
+          initialConnectionWindowSize: 12Mi
+    asserts:
+      - equal:
+          path: spec.connection.bufferLimit
+          value: 100Mi
+      - equal:
+          path: spec.http2.initialStreamWindowSize
+          value: 8Mi
+      - equal:
+          path: spec.http2.initialConnectionWindowSize
+          value: 12Mi
 
   - it: should render a ClientTrafficPolicy referencing a custom gateway name
     set:

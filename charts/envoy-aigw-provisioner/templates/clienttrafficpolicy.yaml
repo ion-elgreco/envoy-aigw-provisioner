@@ -11,4 +11,7 @@ spec:
       kind: Gateway
       name: {{ default (include "ai-gateway.name" .) .Values.gateway.name }}
   connection:
-    bufferLimit: 150Mi
+    bufferLimit: {{ .Values.clientTrafficPolicy.connection.bufferLimit | quote }}
+  http2:
+    initialStreamWindowSize: {{ .Values.clientTrafficPolicy.http2.initialStreamWindowSize | quote }}
+    initialConnectionWindowSize: {{ .Values.clientTrafficPolicy.http2.initialConnectionWindowSize | quote }}
